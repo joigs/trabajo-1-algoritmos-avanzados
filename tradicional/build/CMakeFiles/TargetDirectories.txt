@@ -1,0 +1,3 @@
+/home/joigs/CLionProjects/trabajo 1 algoritmos avanzados/tradicional/build/CMakeFiles/tradicional.dir
+/home/joigs/CLionProjects/trabajo 1 algoritmos avanzados/tradicional/build/CMakeFiles/edit_cache.dir
+/home/joigs/CLionProjects/trabajo 1 algoritmos avanzados/tradicional/build/CMakeFiles/rebuild_cache.dir
