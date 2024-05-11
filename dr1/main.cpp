@@ -3,6 +3,28 @@
 #include <ctime>
 #include <vector>
 
+
+void celda(std::vector<std::vector<int>>& matrizC, const std::vector<std::vector<int>>& matrizA, const std::vector<std::vector<int>>& matrizB, int columna, int fila) {
+    matrizC[fila][columna] = matrizA[fila][columna] * matrizB[fila][columna] + matrizA[fila][columna+1] * matrizB[fila+1][columna];
+    matrizC[fila][columna+1] = matrizA[fila][columna] * matrizB[fila][columna+1] + matrizA[fila][columna+1] * matrizB[fila+1][columna+1];
+    matrizC[fila+1][columna] = matrizA[fila+1][columna] * matrizB[fila][columna] + matrizA[fila+1][columna+1] * matrizB[fila+1][columna];
+    matrizC[fila+1][columna+1] = matrizA[fila+1][columna] * matrizB[fila][columna+1] + matrizA[fila+1][columna+1] * matrizB[fila+1][columna+1];
+}
+
+void division (int n, std::vector<std::vector<int>>& matrizA, std::vector<std::vector<int>>& matrizB, std::vector<std::vector<int>>& matrizC, int columna, int fila) {
+    if (n == 2) {
+        celda(matrizC, matrizA, matrizB, columna, fila);
+    } else {
+        int mitad = n / 2;
+        division(mitad, matrizA, matrizB, matrizC, columna, fila);
+        division(mitad, matrizA, matrizB, matrizC, columna + mitad, fila);
+        division(mitad, matrizA, matrizB, matrizC, columna, fila + mitad);
+        division(mitad, matrizA, matrizB, matrizC, columna + mitad, fila + mitad);
+    }
+}
+
+
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <n>" << std::endl;
@@ -45,6 +67,9 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
+    int columna = 0;
+    int fila = 0;
+    division(n, matrizA, matrizB, matrizC, columna, fila);
 
 
 
@@ -59,3 +84,5 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+
