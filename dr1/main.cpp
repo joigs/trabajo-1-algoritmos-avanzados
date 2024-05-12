@@ -3,27 +3,18 @@
 #include <ctime>
 #include <vector>
 
-
-void celda(std::vector<std::vector<int>>& matrizC, const std::vector<std::vector<int>>& matrizA, const std::vector<std::vector<int>>& matrizB, int columna, int fila) {
-    matrizC[fila][columna] = matrizA[fila][columna] * matrizB[fila][columna] + matrizA[fila][columna+1] * matrizB[fila+1][columna];
-    matrizC[fila][columna+1] = matrizA[fila][columna] * matrizB[fila][columna+1] + matrizA[fila][columna+1] * matrizB[fila+1][columna+1];
-    matrizC[fila+1][columna] = matrizA[fila+1][columna] * matrizB[fila][columna] + matrizA[fila+1][columna+1] * matrizB[fila+1][columna];
-    matrizC[fila+1][columna+1] = matrizA[fila+1][columna] * matrizB[fila][columna+1] + matrizA[fila+1][columna+1] * matrizB[fila+1][columna+1];
-}
-
-void division (int n, std::vector<std::vector<int>>& matrizA, std::vector<std::vector<int>>& matrizB, std::vector<std::vector<int>>& matrizC, int columna, int fila) {
-    if (n == 2) {
-        celda(matrizC, matrizA, matrizB, columna, fila);
-    } else {
-        int mitad = n / 2;
-        division(mitad, matrizA, matrizB, matrizC, columna, fila);
-        division(mitad, matrizA, matrizB, matrizC, columna + mitad, fila);
-        division(mitad, matrizA, matrizB, matrizC, columna, fila + mitad);
-        division(mitad, matrizA, matrizB, matrizC, columna + mitad, fila + mitad);
+// Function to multiply matrices and store the result in matrix_C
+void multiply_matrix(const std::vector<std::vector<int>>& matrix_A, const std::vector<std::vector<int>>& matrix_B, std::vector<std::vector<int>>& matrix_C) {
+    int n = matrix_A.size(); // assuming square matrices
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            matrix_C[i][j] = 0; // Initialize element before sum
+            for (int k = 0; k < n; k++) {
+                matrix_C[i][j] += matrix_A[i][k] * matrix_B[k][j];
+            }
+        }
     }
 }
-
-
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -38,19 +29,19 @@ int main(int argc, char* argv[]) {
     }
 
     srand(time(nullptr));
-
     std::vector<std::vector<int>> matrizA(n, std::vector<int>(n));
     std::vector<std::vector<int>> matrizB(n, std::vector<int>(n));
     std::vector<std::vector<int>> matrizC(n, std::vector<int>(n));
 
-
+    // Randomly fill matrizA and matrizB
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrizA[i][j] =  rand() % 100;
-            matrizB[i][j] =  rand() % 100;
+            matrizA[i][j] = rand() % 100;
+            matrizB[i][j] = rand() % 100;
         }
     }
 
+    // Printing Matrix A
     std::cout << "Matriz generada: " << n << "x" << n << " Matriz A :" << std::endl;
     for (const auto& row : matrizA) {
         for (int num : row) {
@@ -59,6 +50,7 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
+    // Printing Matrix B
     std::cout << "Matriz generada: " << n << "x" << n << " Matriz B :" << std::endl;
     for (const auto& row : matrizB) {
         for (int num : row) {
@@ -67,12 +59,10 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
-    int columna = 0;
-    int fila = 0;
-    division(n, matrizA, matrizB, matrizC, columna, fila);
+    // Multiply matrices A and B, store the result in matrizC
+    multiply_matrix(matrizA, matrizB, matrizC);
 
-
-
+    // Printing Matrix C
     std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
     for (const auto& row : matrizC) {
         for (int num : row) {
@@ -81,8 +71,5 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
-
     return 0;
 }
-
-
