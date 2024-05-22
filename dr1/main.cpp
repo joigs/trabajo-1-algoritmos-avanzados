@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <chrono>
+#include <iomanip> 
 
 // Function to multiply matrices and store the result in matrix_C
 void multiply_matrix(const std::vector<std::vector<int>>& matrix_A, const std::vector<std::vector<int>>& matrix_B, std::vector<std::vector<int>>& matrix_C) {
@@ -36,8 +38,8 @@ int main(int argc, char* argv[]) {
     // Randomly fill matrizA and matrizB
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrizA[i][j] = rand() % 100;
-            matrizB[i][j] = rand() % 100;
+            matrizA[i][j] = rand() % 10;
+            matrizB[i][j] = rand() % 10;
         }
     }
 
@@ -59,8 +61,15 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
+
+    auto start = std::chrono::high_resolution_clock::now();
+    
     // Multiply matrices A and B, store the result in matrizC
     multiply_matrix(matrizA, matrizB, matrizC);
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 
     // Printing Matrix C
     std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
@@ -70,6 +79,9 @@ int main(int argc, char* argv[]) {
         }
         std::cout << std::endl;
     }
+    
+    double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
+std::cout << std::fixed << std::setprecision(3) << "La función dr1 tomó " << milliseconds << " milisegundos." << std::endl;
 
     return 0;
 }

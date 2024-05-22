@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <chrono>
+#include <iomanip> 
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -45,6 +47,10 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
+
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     for (int i = 0; i < n; i++){
         for (int j = 0; j < n; j++){
 
@@ -56,7 +62,12 @@ int main(int argc, char* argv[]) {
 
         }
     }
+    
+    auto end = std::chrono::high_resolution_clock::now();
 
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+
+    
 
 
     std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
@@ -66,7 +77,8 @@ int main(int argc, char* argv[]) {
         }
         std::cout << std::endl;
     }
-
-
+    
+      double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
+std::cout << std::fixed << std::setprecision(3) << "La función tradicional tomó " << milliseconds << " milisegundos." << std::endl;
     return 0;
 }

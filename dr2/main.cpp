@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <chrono>
+#include <iomanip> 
 
 void sumar(std::vector<std::vector<int>>& resultado, const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B, int n) {
     for (int i = 0; i < n; ++i)
@@ -99,8 +101,8 @@ int main(int argc, char* argv[]) {
     std::vector<std::vector<int>> matrizA(n, std::vector<int>(n)), matrizB(n, std::vector<int>(n)), matrizC(n, std::vector<int>(n));
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrizA[i][j] = rand() % 100;
-            matrizB[i][j] = rand() % 100;
+            matrizA[i][j] = rand() % 10;
+            matrizB[i][j] = rand() % 10;
         }
     }
 
@@ -121,9 +123,18 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
 
     strassen(matrizC, matrizA, matrizB, n);
+    
+    auto end = std::chrono::high_resolution_clock::now();
 
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+
+    
+  
+
+  
     std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
     for (const auto& row : matrizC) {
         for (int num : row) {
@@ -131,6 +142,8 @@ int main(int argc, char* argv[]) {
         }
         std::cout << std::endl;
     }
-
+    
+     double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
+std::cout << std::fixed << std::setprecision(3) << "La función dr2 tomó " << milliseconds << " milisegundos." << std::endl;
     return 0;
 }
