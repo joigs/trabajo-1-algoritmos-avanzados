@@ -42,7 +42,7 @@ vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<ve
         for (int i = 0; i < mid; i++) {
             for (int j = 0; j < mid; j++) {
                 C[i][j] = C11[i][j] + C12[i][j];
-                C[i][j + mid] = C11[i][j] + C12[i][j];
+                C[i][j + mid] = C12[i][j] + C22[i][j];
                 C[i + mid][j] = C21[i][j] + C22[i][j];
                 C[i + mid][j + mid] = C21[i][j] + C22[i][j];
             }
