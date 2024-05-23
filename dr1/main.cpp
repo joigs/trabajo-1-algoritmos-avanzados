@@ -3,7 +3,7 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
-#include <iomanip> 
+#include <iomanip>
 
 using namespace std;
 
@@ -35,19 +35,23 @@ vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<ve
             }
         }
 
-        // Multiply and add submatrices
         vector<vector<int>> C11 = MatrixMultiply(A11, B11);
         vector<vector<int>> C12 = MatrixMultiply(A11, B12);
         vector<vector<int>> C21 = MatrixMultiply(A21, B11);
         vector<vector<int>> C22 = MatrixMultiply(A21, B12);
 
+        vector<vector<int>> temp1 = MatrixMultiply(A12, B21);
+        vector<vector<int>> temp2 = MatrixMultiply(A12, B22);
+        vector<vector<int>> temp3 = MatrixMultiply(A22, B21);
+        vector<vector<int>> temp4 = MatrixMultiply(A22, B22);
+
         // Correct combination logic
         for (int i = 0; i < mid; i++) {
             for (int j = 0; j < mid; j++) {
-                C[i][j] = C11[i][j] + MatrixMultiply(A12, B21)[i][j];
-                C[i][j + mid] = C12[i][j] + MatrixMultiply(A12, B22)[i][j];
-                C[i + mid][j] = C21[i][j] + MatrixMultiply(A22, B21)[i][j];
-                C[i + mid][j + mid] = C22[i][j] + MatrixMultiply(A22, B22)[i][j];
+                C[i][j] = C11[i][j] + temp1[i][j];
+                C[i][j + mid] = C12[i][j] + temp2[i][j];
+                C[i + mid][j] = C21[i][j] + temp3[i][j];
+                C[i + mid][j + mid] = C22[i][j] + temp4[i][j];
             }
         }
     }
@@ -78,8 +82,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-
-    
     // Printing Matrix A
     cout << "Matrix A:" << endl;
     for (const auto& row : A) {
@@ -97,9 +99,9 @@ int main(int argc, char* argv[]) {
         }
         cout << endl;
     }
-    
+
     auto start = chrono::high_resolution_clock::now();
-    
+
     // Multiply matrices A and B using divide and conquer
     vector<vector<int>> C = MatrixMultiply(A, B);
 
@@ -107,8 +109,6 @@ int main(int argc, char* argv[]) {
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
     double milliseconds = duration.count() / 1000000.0; // Conversion from nanoseconds to milliseconds
 
-
-    
     // Printing Matrix C
     cout << "Resulting Matrix C:" << endl;
     for (const auto& row : C) {
@@ -118,9 +118,6 @@ int main(int argc, char* argv[]) {
         cout << endl;
     }
 
-
-
-    
     cout << fixed << setprecision(3) << "Matrix multiplication took " << milliseconds << " milliseconds." << endl;
 
     return 0;
