@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/tradicional.dir/main.cpp.o -o tradicional 
