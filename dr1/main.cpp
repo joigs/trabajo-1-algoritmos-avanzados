@@ -75,6 +75,26 @@ int main(int argc, char* argv[]) {
         }
     }
 
+
+    
+    // Printing Matrix A
+    cout << "Matrix A:" << endl;
+    for (const auto& row : A) {
+        for (int num : row) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+
+    // Printing Matrix B
+    cout << "Matrix B:" << endl;
+    for (const auto& row : B) {
+        for (int num : row) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+    
     auto start = chrono::high_resolution_clock::now();
     
     // Multiply matrices A and B using divide and conquer
@@ -84,6 +104,20 @@ int main(int argc, char* argv[]) {
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
     double milliseconds = duration.count() / 1000000.0; // Conversion from nanoseconds to milliseconds
 
+
+    
+    // Printing Matrix C
+    cout << "Resulting Matrix C:" << endl;
+    for (const auto& row : C) {
+        for (int num : row) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+
+
+
+    
     cout << fixed << setprecision(3) << "Matrix multiplication took " << milliseconds << " milliseconds." << endl;
 
     return 0;
