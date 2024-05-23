@@ -5,83 +5,86 @@
 #include <chrono>
 #include <iomanip> 
 
-// Function to multiply matrices and store the result in matrix_C
-void multiply_matrix(const std::vector<std::vector<int>>& matrix_A, const std::vector<std::vector<int>>& matrix_B, std::vector<std::vector<int>>& matrix_C) {
-    int n = matrix_A.size(); // assuming square matrices
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            matrix_C[i][j] = 0; // Initialize element before sum
-            for (int k = 0; k < n; k++) {
-                matrix_C[i][j] += matrix_A[i][k] * matrix_B[k][j];
+using namespace std;
+
+vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+    int n = A.size();
+    vector<vector<int>> C(n, vector<int>(n, 0));
+
+    if (n == 1) {
+        C[0][0] = A[0][0] * B[0][0];
+    } else {
+        int mid = n / 2;
+        vector<vector<int>> A11(mid, vector<int>(mid)), A12(mid, vector<int>(mid)), A21(mid, vector<int>(mid)), A22(mid, vector<int>(mid));
+        vector<vector<int>> B11(mid, vector<int>(mid)), B12(mid, vector<int>(mid)), B21(mid, vector<int>(mid)), B22(mid, vector<int>(mid));
+
+        // Partitioning A and B into submatrices
+        for (int i = 0; i < mid; i++) {
+            for (int j = 0; j < mid; j++) {
+                A11[i][j] = A[i][j];
+                A12[i][j] = A[i][j + mid];
+                A21[i][j] = A[i + mid][j];
+                A22[i][j] = A[i + mid][j + mid];
+
+                B11[i][j] = B[i][j];
+                B12[i][j] = B[i][j + mid];
+                B21[i][j] = B[i + mid][j];
+                B22[i][j] = B[i + mid][j + mid];
+            }
+        }
+
+        vector<vector<int>> C11 = MatrixMultiply(A11, B11);
+        vector<vector<int>> C12 = MatrixMultiply(A11, B12);
+        vector<vector<int>> C21 = MatrixMultiply(A21, B11);
+        vector<vector<int>> C22 = MatrixMultiply(A21, B12);
+
+        // Combining results into C
+        for (int i = 0; i < mid; i++) {
+            for (int j = 0; j < mid; j++) {
+                C[i][j] = C11[i][j] + C12[i][j];
+                C[i][j + mid] = C11[i][j] + C12[i][j];
+                C[i + mid][j] = C21[i][j] + C22[i][j];
+                C[i + mid][j + mid] = C21[i][j] + C22[i][j];
             }
         }
     }
+
+    return C;
 }
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <n>" << std::endl;
+        cerr << "Usage: " << argv[0] << " <n>" << endl;
         return 1;
     }
 
-    int n = std::atoi(argv[1]);
+    int n = atoi(argv[1]);
     if (n <= 0) {
-        std::cerr << "Ingrese un número positivo" << std::endl;
+        cerr << "Ingrese un número positivo" << endl;
         return 1;
     }
 
     srand(time(nullptr));
-    std::vector<std::vector<int>> matrizA(n, std::vector<int>(n));
-    std::vector<std::vector<int>> matrizB(n, std::vector<int>(n));
-    std::vector<std::vector<int>> matrizC(n, std::vector<int>(n));
+    vector<vector<int>> A(n, vector<int>(n)), B(n, vector<int>(n));
 
-    // Randomly fill matrizA and matrizB
+    // Randomly fill A and B
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrizA[i][j] = rand() % 10;
-            matrizB[i][j] = rand() % 10;
+            A[i][j] = rand() % 10;
+            B[i][j] = rand() % 10;
         }
     }
 
-    // Printing Matrix A
-    std::cout << "Matriz generada: " << n << "x" << n << " Matriz A :" << std::endl;
-    for (const auto& row : matrizA) {
-        for (int num : row) {
-            std::cout << num << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    // Printing Matrix B
-    std::cout << "Matriz generada: " << n << "x" << n << " Matriz B :" << std::endl;
-    for (const auto& row : matrizB) {
-        for (int num : row) {
-            std::cout << num << " ";
-        }
-        std::cout << std::endl;
-    }
-
-
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     
-    // Multiply matrices A and B, store the result in matrizC
-    multiply_matrix(matrizA, matrizB, matrizC);
+    // Multiply matrices A and B using divide and conquer
+    vector<vector<int>> C = MatrixMultiply(A, B);
 
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    double milliseconds = duration.count() / 1000000.0; // Conversion from nanoseconds to milliseconds
 
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-
-    // Printing Matrix C
-    std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
-    for (const auto& row : matrizC) {
-        for (int num : row) {
-            std::cout << num << " ";
-        }
-        std::cout << std::endl;
-    }
-    
-    double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
-std::cout << std::fixed << std::setprecision(3) << "La función dr1 tomó " << milliseconds << " milisegundos." << std::endl;
+    cout << fixed << setprecision(3) << "Matrix multiplication took " << milliseconds << " milliseconds." << endl;
 
     return 0;
 }
