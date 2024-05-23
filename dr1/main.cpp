@@ -15,8 +15,10 @@ vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<ve
         C[0][0] = A[0][0] * B[0][0];
     } else {
         int mid = n / 2;
-        vector<vector<int>> A11(mid, vector<int>(mid)), A12(mid, vector<int>(mid)), A21(mid, vector<int>(mid)), A22(mid, vector<int>(mid));
-        vector<vector<int>> B11(mid, vector<int>(mid)), B12(mid, vector<int>(mid)), B21(mid, vector<int>(mid)), B22(mid, vector<int>(mid));
+        vector<vector<int>> A11(mid, vector<int>(mid)), A12(mid, vector<int>(mid)), 
+                            A21(mid, vector<int>(mid)), A22(mid, vector<int>(mid));
+        vector<vector<int>> B11(mid, vector<int>(mid)), B12(mid, vector<int>(mid)), 
+                            B21(mid, vector<int>(mid)), B22(mid, vector<int>(mid));
 
         // Partitioning A and B into submatrices
         for (int i = 0; i < mid; i++) {
@@ -33,18 +35,19 @@ vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<ve
             }
         }
 
+        // Multiply and add submatrices
         vector<vector<int>> C11 = MatrixMultiply(A11, B11);
         vector<vector<int>> C12 = MatrixMultiply(A11, B12);
         vector<vector<int>> C21 = MatrixMultiply(A21, B11);
         vector<vector<int>> C22 = MatrixMultiply(A21, B12);
 
-        // Combining results into C
+        // Correct combination logic
         for (int i = 0; i < mid; i++) {
             for (int j = 0; j < mid; j++) {
-                C[i][j] = C11[i][j] + C12[i][j];
-                C[i][j + mid] = C12[i][j] + C22[i][j];
-                C[i + mid][j] = C21[i][j] + C22[i][j];
-                C[i + mid][j + mid] = C21[i][j] + C22[i][j];
+                C[i][j] = C11[i][j] + MatrixMultiply(A12, B21)[i][j];
+                C[i][j + mid] = C12[i][j] + MatrixMultiply(A12, B22)[i][j];
+                C[i + mid][j] = C21[i][j] + MatrixMultiply(A22, B21)[i][j];
+                C[i + mid][j + mid] = C22[i][j] + MatrixMultiply(A22, B22)[i][j];
             }
         }
     }
