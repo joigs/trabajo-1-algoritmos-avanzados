@@ -26,8 +26,8 @@ void strassen(std::vector<std::vector<int>>& C, const std::vector<std::vector<in
         A12(mitad, std::vector<int>(mitad)), A21(mitad, std::vector<int>(mitad)), A22(mitad, std::vector<int>(mitad));
         std::vector<std::vector<int>> B11(mitad, std::vector<int>(mitad)), B12(mitad, std::vector<int>(mitad)), B21(mitad, std::vector<int>(mitad)), B22(mitad, std::vector<int>(mitad));
         std::vector<std::vector<int>> C11(mitad, std::vector<int>(mitad)), C12(mitad, std::vector<int>(mitad)), C21(mitad, std::vector<int>(mitad)), C22(mitad, std::vector<int>(mitad));
-        std::vector<std::vector<int>> M1(mitad, std::vector<int>(mitad)), M2(mitad, std::vector<int>(mitad)), M3(mitad, std::vector<int>(mitad)), M4(mitad, std::vector<int>(mitad));
-        std::vector<std::vector<int>> M5(mitad, std::vector<int>(mitad)), M6(mitad, std::vector<int>(mitad)), M7(mitad, std::vector<int>(mitad));
+        std::vector<std::vector<int>> M(mitad, std::vector<int>(mitad)), N(mitad, std::vector<int>(mitad)), O(mitad, std::vector<int>(mitad)), P(mitad, std::vector<int>(mitad));
+        std::vector<std::vector<int>> Q(mitad, std::vector<int>(mitad)), R(mitad, std::vector<int>(mitad)), S(mitad, std::vector<int>(mitad));
         std::vector<std::vector<int>> temp1(mitad, std::vector<int>(mitad)), temp2(mitad, std::vector<int>(mitad));
 
         for (int i = 0; i < mitad; ++i) {
@@ -43,36 +43,33 @@ void strassen(std::vector<std::vector<int>>& C, const std::vector<std::vector<in
             }
         }
 
-        // Calculando M1 a M7 según el método de Strassen
         sumar(temp1, A11, A22, mitad);
         sumar(temp2, B11, B22, mitad);
-        strassen(M1, temp1, temp2, mitad);
+        strassen(M, temp1, temp2, mitad);
         sumar(temp1, A21, A22, mitad);
-        strassen(M2, temp1, B11, mitad);
+        strassen(N, temp1, B11, mitad);
         restar(temp1, B12, B22, mitad);
-        strassen(M3, A11, temp1, mitad);
+        strassen(O, A11, temp1, mitad);
         restar(temp1, B21, B11, mitad);
-        strassen(M4, A22, temp1, mitad);
+        strassen(P, A22, temp1, mitad);
         sumar(temp1, A11, A12, mitad);
-        strassen(M5, temp1, B22, mitad);
+        strassen(Q, temp1, B22, mitad);
         restar(temp1, A21, A11, mitad);
         sumar(temp2, B11, B12, mitad);
-        strassen(M6, temp1, temp2, mitad);
+        strassen(R, temp1, temp2, mitad);
         restar(temp1, A12, A22, mitad);
         sumar(temp2, B21, B22, mitad);
-        strassen(M7, temp1, temp2, mitad);
+        strassen(S, temp1, temp2, mitad);
 
-        // Cálculo de C11, C12, C21, C22
         for (int i = 0; i < mitad; ++i) {
             for (int j = 0; j < mitad; ++j) {
-                C11[i][j] = M1[i][j] + M4[i][j] - M5[i][j] + M7[i][j];
-                C12[i][j] = M3[i][j] + M5[i][j];
-                C21[i][j] = M2[i][j] + M4[i][j];
-                C22[i][j] = M1[i][j] - M2[i][j] + M3[i][j] + M6[i][j];
+                C11[i][j] = M[i][j] + P[i][j] - Q[i][j] + S[i][j];
+                C12[i][j] = O[i][j] + Q[i][j];
+                C21[i][j] = N[i][j] + P[i][j];
+                C22[i][j] = M[i][j] - N[i][j] + O[i][j] + R[i][j];
             }
         }
 
-        // Reensamblar matriz C a partir de los bloques
         for (int i = 0; i < mitad; ++i) {
             for (int j = 0; j < mitad; ++j) {
                 C[i][j] = C11[i][j];
@@ -91,7 +88,7 @@ int main(int argc, char* argv[]) {
     }
 
     int n = std::atoi(argv[1]);
-    if (n <= 0 || (n & (n - 1)) != 0) {  // Asegura que n sea potencia de 2
+    if (n <= 0 || (n & (n - 1)) != 0) {
         std::cerr << "Ingrese un número que sea potencia de 2" << std::endl;
         return 1;
     }
@@ -143,7 +140,7 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
     
-     double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
-std::cout << std::fixed << std::setprecision(3) << "La función dr2 tomó " << milliseconds << " milisegundos." << std::endl;
+     double milliseconds = duration.count() / 1000000.0;
+std::cout << std::fixed << std::setprecision(3) << "El metodo Strassen tomó " << milliseconds << " milisegundos." << std::endl;
     return 0;
 }

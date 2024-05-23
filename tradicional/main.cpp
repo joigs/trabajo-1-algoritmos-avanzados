@@ -26,8 +26,8 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrizA[i][j] =  rand() % 100;
-            matrizB[i][j] =  rand() % 100;
+            matrizA[i][j] =  rand() % 10;
+            matrizB[i][j] =  rand() % 10;
         }
     }
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
     }
     
-      double milliseconds = duration.count() / 1000000.0; // Conversión de nanosegundos a milisegundos
-std::cout << std::fixed << std::setprecision(3) << "La función tradicional tomó " << milliseconds << " milisegundos." << std::endl;
+      double milliseconds = duration.count() / 1000000.0; 
+std::cout << std::fixed << std::setprecision(3) << "El metodo tradicional tomó " << milliseconds << " milisegundos." << std::endl;
     return 0;
 }

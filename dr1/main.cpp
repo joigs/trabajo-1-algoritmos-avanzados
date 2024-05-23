@@ -7,51 +7,49 @@
 
 using namespace std;
 
-vector<vector<int>> MatrixMultiply(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+vector<vector<int>> Divide(const vector<vector<int>>& A, const vector<vector<int>>& B) {
     int n = A.size();
     vector<vector<int>> C(n, vector<int>(n, 0));
 
     if (n == 1) {
         C[0][0] = A[0][0] * B[0][0];
     } else {
-        int mid = n / 2;
-        vector<vector<int>> A11(mid, vector<int>(mid)), A12(mid, vector<int>(mid)), 
-                            A21(mid, vector<int>(mid)), A22(mid, vector<int>(mid));
-        vector<vector<int>> B11(mid, vector<int>(mid)), B12(mid, vector<int>(mid)), 
-                            B21(mid, vector<int>(mid)), B22(mid, vector<int>(mid));
+        int mitad = n / 2;
+        vector<vector<int>> A11(mitad, vector<int>(mitad)), A12(mitad, vector<int>(mitad)),
+                            A21(mitad, vector<int>(mitad)), A22(mitad, vector<int>(mitad));
+        vector<vector<int>> B11(mitad, vector<int>(mitad)), B12(mitad, vector<int>(mitad)),
+                            B21(mitad, vector<int>(mitad)), B22(mitad, vector<int>(mitad));
 
-        // Partitioning A and B into submatrices
-        for (int i = 0; i < mid; i++) {
-            for (int j = 0; j < mid; j++) {
+        for (int i = 0; i < mitad; i++) {
+            for (int j = 0; j < mitad; j++) {
                 A11[i][j] = A[i][j];
-                A12[i][j] = A[i][j + mid];
-                A21[i][j] = A[i + mid][j];
-                A22[i][j] = A[i + mid][j + mid];
+                A12[i][j] = A[i][j + mitad];
+                A21[i][j] = A[i + mitad][j];
+                A22[i][j] = A[i + mitad][j + mitad];
 
                 B11[i][j] = B[i][j];
-                B12[i][j] = B[i][j + mid];
-                B21[i][j] = B[i + mid][j];
-                B22[i][j] = B[i + mid][j + mid];
+                B12[i][j] = B[i][j + mitad];
+                B21[i][j] = B[i + mitad][j];
+                B22[i][j] = B[i + mitad][j + mitad];
             }
         }
 
-        vector<vector<int>> C11 = MatrixMultiply(A11, B11);
-        vector<vector<int>> C12 = MatrixMultiply(A11, B12);
-        vector<vector<int>> C21 = MatrixMultiply(A21, B11);
-        vector<vector<int>> C22 = MatrixMultiply(A21, B12);
+        vector<vector<int>> C11 = Divide(A11, B11);
+        vector<vector<int>> C12 = Divide(A11, B12);
+        vector<vector<int>> C21 = Divide(A21, B11);
+        vector<vector<int>> C22 = Divide(A21, B12);
 
-        vector<vector<int>> temp1 = MatrixMultiply(A12, B21);
-        vector<vector<int>> temp2 = MatrixMultiply(A12, B22);
-        vector<vector<int>> temp3 = MatrixMultiply(A22, B21);
-        vector<vector<int>> temp4 = MatrixMultiply(A22, B22);
+        vector<vector<int>> temp1 = Divide(A12, B21);
+        vector<vector<int>> temp2 = Divide(A12, B22);
+        vector<vector<int>> temp3 = Divide(A22, B21);
+        vector<vector<int>> temp4 = Divide(A22, B22);
 
-        // Correct combination logic
-        for (int i = 0; i < mid; i++) {
-            for (int j = 0; j < mid; j++) {
+        for (int i = 0; i < mitad; i++) {
+            for (int j = 0; j < mitad; j++) {
                 C[i][j] = C11[i][j] + temp1[i][j];
-                C[i][j + mid] = C12[i][j] + temp2[i][j];
-                C[i + mid][j] = C21[i][j] + temp3[i][j];
-                C[i + mid][j + mid] = C22[i][j] + temp4[i][j];
+                C[i][j + mitad] = C12[i][j] + temp2[i][j];
+                C[i + mitad][j] = C21[i][j] + temp3[i][j];
+                C[i + mitad][j + mitad] = C22[i][j] + temp4[i][j];
             }
         }
     }
@@ -65,35 +63,33 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int n = atoi(argv[1]);
-    if (n <= 0) {
-        cerr << "Ingrese un número positivo" << endl;
+    int n = std::atoi(argv[1]);
+    if (n <= 0 || (n & (n - 1)) != 0) {
+        std::cerr << "Ingrese un número que sea potencia de 2" << std::endl;
         return 1;
     }
 
     srand(time(nullptr));
-    vector<vector<int>> A(n, vector<int>(n)), B(n, vector<int>(n));
+    vector<vector<int>> matrizA(n, vector<int>(n)), matrizB(n, vector<int>(n));
 
     // Randomly fill A and B
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            A[i][j] = rand() % 10;
-            B[i][j] = rand() % 10;
+            matrizA[i][j] = rand() % 10;
+            matrizB[i][j] = rand() % 10;
         }
     }
 
-    // Printing Matrix A
-    cout << "Matrix A:" << endl;
-    for (const auto& row : A) {
+    cout << "Matriz A:" << endl;
+    for (const auto& row : matrizA) {
         for (int num : row) {
             cout << num << " ";
         }
         cout << endl;
     }
 
-    // Printing Matrix B
-    cout << "Matrix B:" << endl;
-    for (const auto& row : B) {
+    cout << "Matriz B:" << endl;
+    for (const auto& row : matrizB) {
         for (int num : row) {
             cout << num << " ";
         }
@@ -102,23 +98,23 @@ int main(int argc, char* argv[]) {
 
     auto start = chrono::high_resolution_clock::now();
 
-    // Multiply matrices A and B using divide and conquer
-    vector<vector<int>> C = MatrixMultiply(A, B);
+    vector<vector<int>> matrizC = Divide(matrizA, matrizB);
 
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    double milliseconds = duration.count() / 1000000.0; // Conversion from nanoseconds to milliseconds
+    double milliseconds = duration.count() / 1000000.0;
 
-    // Printing Matrix C
-    cout << "Resulting Matrix C:" << endl;
-    for (const auto& row : C) {
+
+    std::cout << "Matriz multiplicada AxB : " << n << "x" << n << " Matriz C:" << std::endl;
+    for (const auto& row : matrizC) {
         for (int num : row) {
-            cout << num << " ";
+            std::cout << num << " ";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 
-    cout << fixed << setprecision(3) << "Matrix multiplication took " << milliseconds << " milliseconds." << endl;
+
+    std::cout << std::fixed << std::setprecision(3) << "El metodo divide y conquista tomó " << milliseconds << " milisegundos." << std::endl;
 
     return 0;
 }
